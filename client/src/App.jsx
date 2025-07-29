@@ -6,23 +6,18 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
 
   return (
     <Router>
       <Routes>
         <Route
           path="/login"
-          element={
-            <Auth setUser={setUser} setToken={setToken} />
-          }
+          element={<Auth setUser={setUser} />}
         />
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute user={user}>
-              <Dashboard user={user} token={token} setUser={setUser} setToken={setToken} />
-            </ProtectedRoute>
+            user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />
           }
         />
         <Route

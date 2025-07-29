@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Add this import
 import styles from './Auth.module.css';
 
 function SignInForm({ email, setEmail, password, setPassword, handleAuth, error }) {
@@ -69,11 +70,12 @@ function SignUpForm({ email, setEmail, password, setPassword, handleAuth, error,
   );
 }
 
-export default function Auth({ setUser, setToken }) {
+export default function Auth({ setUser }) {
   const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Add this line
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -88,8 +90,7 @@ export default function Auth({ setUser, setToken }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Auth failed');
       setUser(data.user);
-      setToken(data.token);
-      // Redirect to dashboard or wherever you want
+      navigate('/dashboard'); // Redirect after successful auth
     } catch (err) {
       setError(err.message);
     }

@@ -5,27 +5,12 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const prisma = new PrismaClient();
-
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret';
-
-// Middleware to authenticate JWT
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'No token provided' });
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Invalid token' });
-    req.user = user;
-    next();
-  });
-}
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -39,35 +24,32 @@ app.get('/todos', async (req, res) => {
 
 app.get('/todos/:id', async (req, res) => {
   const { id } = req.params;
-  const { data, error } = await supabase.from('todos').select('*').eq('id', id).single();
-  if (error) return res.status(404).json({ error: error.message });
-  res.json(data);
+  const todo = await prisma.todo.findUnique({ where: { id: Number(id) } });
+  if (!todo) return res.status(404).json({ error: 'Todo not found' });
+  res.json(todo);
 });
 
 // Example: Create a todo
 app.post('/todos', async (req, res) => {
-  const { title, completed = false } = req.body;
-  const todo = await prisma.todo.create({ data: { title, completed } });
+  const { title, completed = false, userId } = req.body;
+  if (!userId) return res.status(400).json({ error: 'userId required' });
+  const todo = await prisma.todo.create({ data: { title, completed, userId } });
   res.status(201).json(todo);
 });
 
 app.put('/todos/:id', async (req, res) => {
   const { id } = req.params;
   const { title, completed } = req.body;
-  const { data, error } = await supabase
-    .from('todos')
-    .update({ title, completed })
-    .eq('id', id)
-    .select()
-    .single();
-  if (error) return res.status(400).json({ error: error.message });
-  res.json(data);
+  const todo = await prisma.todo.update({
+    where: { id: Number(id) },
+    data: { title, completed }
+  });
+  res.json(todo);
 });
 
 app.delete('/todos/:id', async (req, res) => {
   const { id } = req.params;
-  const { error } = await supabase.from('todos').delete().eq('id', id);
-  if (error) return res.status(400).json({ error: error.message });
+  await prisma.todo.delete({ where: { id: Number(id) } });
   res.status(204).send();
 });
 
@@ -78,19 +60,17 @@ async function createUser(prisma, email, password) {
   return prisma.user.create({ data: { email, password: hashed } });
 }
 
-function generateToken(user, secret) {
-  return jwt.sign({ userId: user.id, email: user.email }, secret, { expiresIn: '7d' });
-}
-
 // Signup endpoint
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;
+  console.log('[SIGNUP] Request:', { email, password }); // Log incoming signup request
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
   try {
     const user = await createUser(prisma, email, password);
-    const token = generateToken(user, JWT_SECRET);
-    res.status(201).json({ token, user: { id: user.id, email: user.email } });
+    console.log('[SIGNUP] Success:', user); // Log created user
+    res.status(201).json({ user: { id: user.id, email: user.email } });
   } catch (err) {
+    console.error('[SIGNUP] Error:', err.message); // Log error
     res.status(err.message === 'User already exists' ? 409 : 500).json({ error: err.message || 'Signup failed' });
   }
 });
@@ -98,23 +78,27 @@ app.post('/signup', async (req, res) => {
 // Signin endpoint
 app.post('/signin', async (req, res) => {
   const { email, password } = req.body;
+  console.log('[SIGNIN] Request:', { email, password }); // Log incoming signin request
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
   try {
     const user = await prisma.user.findUnique({ where: { email } });
+    console.log('[SIGNIN] User found:', user); // Log found user
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
     const valid = await bcrypt.compare(password, user.password);
+    console.log('[SIGNIN] Password valid:', valid); // Log password check
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user.id, email: user.email } });
+    res.json({ user: { id: user.id, email: user.email } });
   } catch (err) {
+    console.error('[SIGNIN] Error:', err.message); // Log error
     res.status(500).json({ error: 'Signin failed' });
   }
 });
 
-// Dashboard endpoint
-app.get('/dashboard', authenticateToken, async (req, res) => {
+// Dashboard endpoint (use userId from query param)
+app.get('/dashboard', async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = Number(req.query.userId);
+    if (!userId) return res.status(400).json({ error: 'userId required' });
     const activeTodos = await prisma.todo.count({ where: { userId, completed: false } });
     const reminders = await prisma.reminder.count({ where: { userId } });
     res.json({ activeTodos, reminders });
@@ -126,4 +110,4 @@ app.get('/dashboard', authenticateToken, async (req, res) => {
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-}); 
+});

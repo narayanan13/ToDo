@@ -7,21 +7,13 @@ export default function Dashboard({ user, token, setUser, setToken }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDashboard = async () => {
-      setError('');
-      try {
-        const res = await fetch('http://localhost:4000/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to load dashboard');
-        setDashboard(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    fetchDashboard();
-  }, [token]);
+    if (user) {
+      fetch(`http://localhost:4000/dashboard?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => setDashboard(data))
+        .catch(err => setError(err.message));
+    }
+  }, [user]);
 
   const handleSignOut = () => {
     setUser(null);
