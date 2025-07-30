@@ -1,0 +1,144 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #c2e9fb 0%, #fbc2eb 100%);
+}
+
+.card {
+  background: rgba(255,255,255,0.97);
+  padding: 2.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 8px 32px rgba(60,60,120,0.12);
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+}
+
+.header {
+  width: 100%;
+  background: linear-gradient(90deg, #4f8cff 0%, #a259ff 100%);
+  border-radius: 1rem;
+  padding: 1.2rem 0;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 12px rgba(80,80,160,0.08);
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-align: center;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(80,80,160,0.10);
+}
+
+.welcome {
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+  color: #444;
+  text-align: center;
+}
+
+.email {
+  font-weight: bold;
+  color: #4f8cff;
+}
+
+.stats {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.statCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #e0eaff 0%, #f3eaff 100%);
+  border-radius: 1rem;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(80,80,160,0.06);
+}
+
+.statLabel {
+  color: #555;
+  font-weight: 500;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #4f8cff;
+}
+
+.statValuePurple {
+  color: #a259ff;
+}
+
+.button {
+  margin-top: 2rem;
+  width: 100%;
+  background: linear-gradient(90deg, #4f8cff 0%, #a259ff 100%);
+  color: #fff;
+  padding: 1rem 0;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(80,80,160,0.10);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background: linear-gradient(90deg, #3578e5 0%, #7c3aed 100%);
+}
+
+.loading {
+  text-align: center;
+  color: #888;
+  padding: 2rem 0;
+  font-size: 1.1rem;
+}
+
+.error {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #d32f2f;
+  background: #ffeaea;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border-radius: 0.7rem;
+  border: 1px solid #d0d0d0;
+  font-size: 1rem;
+}
+
+.addButton {
+  background: linear-gradient(90deg, #4f8cff 0%, #a259ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.addButton:hover {
+  background: linear-gradient(90deg, #3578e5 0%, #7c3aed 100%);
+}

@@ -78,18 +78,14 @@ app.post('/signup', async (req, res) => {
 // Signin endpoint
 app.post('/signin', async (req, res) => {
   const { email, password } = req.body;
-  console.log('[SIGNIN] Request:', { email, password }); // Log incoming signin request
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    console.log('[SIGNIN] User found:', user); // Log found user
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
     const valid = await bcrypt.compare(password, user.password);
-    console.log('[SIGNIN] Password valid:', valid); // Log password check
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
     res.json({ user: { id: user.id, email: user.email } });
   } catch (err) {
-    console.error('[SIGNIN] Error:', err.message); // Log error
     res.status(500).json({ error: 'Signin failed' });
   }
 });
@@ -104,6 +100,22 @@ app.get('/dashboard', async (req, res) => {
     res.json({ activeTodos, reminders });
   } catch (err) {
     res.status(500).json({ error: 'Failed to load dashboard' });
+  }
+});
+
+// Create a new reminder
+app.post('/reminders', async (req, res) => {
+  const { message, dueDate, userId } = req.body;
+  console.log('[REMINDER] Request:', { message, dueDate, userId });
+  if (!message || !dueDate || !userId) return res.status(400).json({ error: 'message, dueDate, and userId required' });
+  try {
+    const reminder = await prisma.reminder.create({
+      data: { message, dueDate: new Date(dueDate), userId }
+    });
+    res.status(201).json(reminder);
+  } catch (err) {
+    console.error('[REMINDER] Error:', err.message);
+    res.status(500).json({ error: 'Failed to add reminder' });
   }
 });
 

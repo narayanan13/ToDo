@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styles from './Dashboard.module.css';
 
 export default function Dashboard({ user, token, setUser, setToken }) {
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState('');
+  const [todoTitle, setTodoTitle] = useState('');
+  const [reminderText, setReminderText] = useState('');
+  const [reminderDate, setReminderDate] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,35 +21,116 @@ export default function Dashboard({ user, token, setUser, setToken }) {
 
   const handleSignOut = () => {
     setUser(null);
-    setToken(null);
+    setToken && setToken(null);
     setDashboard(null);
     navigate('/login');
   };
 
+  // Add new todo
+  const handleAddTodo = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!todoTitle.trim()) return;
+    try {
+      const res = await fetch('http://localhost:4000/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: todoTitle, userId: user.id })
+      });
+      if (!res.ok) throw new Error('Failed to add todo');
+      setTodoTitle('');
+      // Refresh dashboard stats
+      fetch(`http://localhost:4000/dashboard?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => setDashboard(data));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Add new reminder
+  const handleAddReminder = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!reminderText.trim() || !reminderDate) return;
+    console.log('[ADD REMINDER] Request:', { reminderText, reminderDate, userId: user.id }); // Log incoming request
+    try {
+      const res = await fetch('http://localhost:4000/reminders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: reminderText, dueDate: reminderDate, userId: user.id })
+      });
+      if (!res.ok) throw new Error('Failed to add reminder');
+      setReminderText('');
+      setReminderDate('');
+      // Refresh dashboard stats
+      fetch(`http://localhost:4000/dashboard?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => setDashboard(data));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
-      <div className="bg-white/90 p-10 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
-        <h2 className="text-3xl font-extrabold mb-8 text-center text-blue-700 tracking-tight drop-shadow">Dashboard</h2>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Dashboard</h2>
+        </div>
+        <div className={styles.welcome}>
+          Welcome, <span className={styles.email}>{user.email}</span>!
+        </div>
+        {/* Add Todo Form */}
+        <form className={styles.form} onSubmit={handleAddTodo}>
+          <input
+            type="text"
+            placeholder="New Todo Title"
+            value={todoTitle}
+            onChange={e => setTodoTitle(e.target.value)}
+            className={styles.input}
+          />
+          <button className={styles.addButton} type="submit">Add Todo</button>
+        </form>
+        {/* Add Reminder Form */}
+        <form className={styles.form} onSubmit={handleAddReminder}>
+          <input
+            type="text"
+            placeholder="Reminder message"
+            value={reminderText}
+            onChange={e => setReminderText(e.target.value)}
+            className={styles.input}
+          />
+          <input
+            type="date"
+            value={reminderDate}
+            onChange={e => setReminderDate(e.target.value)}
+            className={styles.input}
+          />
+          <button className={styles.addButton} type="submit">Add Reminder</button>
+        </form>
         {dashboard ? (
           <>
-            <div className="mb-6 text-lg text-gray-700 text-center">Welcome, <span className="font-bold text-blue-600">{user.email}</span>!</div>
-            <div className="mb-4 flex justify-between items-center bg-blue-50 rounded-lg px-4 py-3 shadow">
-              <span className="text-gray-700 font-medium">Total Active Todos</span>
-              <span className="text-2xl font-bold text-blue-700">{dashboard.activeTodos}</span>
+            <div className={styles.stats}>
+              <div className={styles.statCard}>
+                <span className={styles.statLabel}>Total Active Todos</span>
+                <span className={styles.statValue}>{dashboard.activeTodos}</span>
+              </div>
+              <div className={styles.statCard}>
+                <span className={styles.statLabel}>Total Reminders</span>
+                <span className={`${styles.statValue} ${styles.statValuePurple}`}>{dashboard.reminders}</span>
+              </div>
             </div>
-            <div className="mb-4 flex justify-between items-center bg-purple-50 rounded-lg px-4 py-3 shadow">
-              <span className="text-gray-700 font-medium">Total Reminders</span>
-              <span className="text-2xl font-bold text-purple-700">{dashboard.reminders}</span>
-            </div>
-            <button
-              className="mt-6 w-full bg-gradient-to-r from-gray-300 to-gray-400 text-gray-800 py-3 rounded-lg font-semibold shadow hover:from-gray-400 hover:to-gray-500 transition"
-              onClick={handleSignOut}
-            >Sign Out</button>
+            <button className={styles.button} onClick={handleSignOut}>
+              Sign Out
+            </button>
           </>
         ) : (
-          <div>Loading dashboard...</div>
+          <div className={styles.loading}>Loading dashboard...</div>
         )}
-        {error && <div className="mt-6 text-center text-red-500 font-semibold bg-red-50 rounded-lg py-2 px-4">{error}</div>}
+        {error && (
+          <div className={styles.error}>{error}</div>
+        )}
       </div>
     </div>
   );
