@@ -142,3 +142,107 @@
 .addButton:hover {
   background: linear-gradient(90deg, #3578e5 0%, #7c3aed 100%);
 }
+
+.todoList {
+  margin-bottom: 2rem;
+  background: #f8faff;
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: 0 2px 8px rgba(80,80,160,0.04);
+}
+
+.todoListTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #4f8cff;
+}
+
+.todoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+  padding: 0.7rem 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.todoCheckbox {
+  accent-color: #4f8cff;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.todoCompleted {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.dashboardContainer {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #c2e9fb 0%, #fbc2eb 100%);
+}
+
+.sidebar {
+  width: 220px;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 2rem 1rem 1rem 1rem;
+  box-shadow: 2px 0 12px rgba(80,80,160,0.04);
+}
+
+.sidebarHeader {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #4f8cff;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.sidebarTab {
+  background: none;
+  border: none;
+  padding: 0.8rem 1rem;
+  font-size: 1.05rem;
+  color: #555;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 0.7rem;
+  margin-bottom: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebarTab:hover,
+.activeTab {
+  background: linear-gradient(90deg, #e0eaff 0%, #f3eaff 100%);
+  color: #4f8cff;
+  font-weight: 600;
+}
+
+.sidebarSignout {
+  margin-top: auto;
+  background: linear-gradient(90deg, #4f8cff 0%, #a259ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebarSignout:hover {
+  background: linear-gradient(90deg, #3578e5 0%, #7c3aed 100%);
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
