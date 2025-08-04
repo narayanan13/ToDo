@@ -119,6 +119,18 @@ app.post('/reminders', async (req, res) => {
   }
 });
 
+// Get all reminders for a user
+app.get('/reminders', async (req, res) => {
+  const userId = Number(req.query.userId);
+  if (!userId) return res.status(400).json({ error: 'userId required' });
+  try {
+    const reminders = await prisma.reminder.findMany({ where: { userId } });
+    res.json(reminders);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch reminders' });
+  }
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

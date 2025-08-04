@@ -246,3 +246,185 @@
   flex-direction: column;
   align-items: stretch;
 }
+
+.revampContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #c2e9fb 0%, #fbc2eb 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+.revampHeader {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem auto 2rem auto;
+}
+
+.revampWelcome {
+  font-size: 1.2rem;
+  color: #444;
+}
+
+.revampSignout {
+  background: linear-gradient(90deg, #4f8cff 0%, #a259ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.revampSignout:hover {
+  background: linear-gradient(90deg, #3578e5 0%, #7c3aed 100%);
+}
+
+.cardGrid {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.infoCard {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(80,80,160,0.10);
+  padding: 2.5rem 2rem;
+  min-width: 260px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.infoCard:hover {
+  box-shadow: 0 8px 32px rgba(80,80,160,0.18);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4f8cff;
+  margin-bottom: 1.2rem;
+}
+
+.cardStats {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.statLabel {
+  color: #888;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+.statValue {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.cardAction {
+  margin-top: 1.2rem;
+  color: #a259ff;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.sectionPanel {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 16px rgba(80,80,160,0.08);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #4f8cff;
+  margin-bottom: 1.2rem;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #4f8cff;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 700px) {
+  .revampContainer {
+    padding: 0;
+  }
+
+  .revampHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 1rem auto;
+    max-width: 100vw;
+    padding: 0 1rem;
+  }
+
+  .cardGrid {
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    align-items: center;
+  }
+
+  .infoCard {
+    min-width: unset;
+    width: 95vw;
+    padding: 1.5rem 1rem;
+  }
+
+  .sectionPanel {
+    padding: 1rem 0.5rem;
+    max-width: 98vw;
+    margin: 1rem auto;
+  }
+
+  .todoList {
+    padding: 0.7rem 0.3rem;
+  }
+
+  .form {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .input, .addButton {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .backButton {
+    margin-bottom: 0.7rem;
+    font-size: 0.95rem;
+  }
+}
